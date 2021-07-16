@@ -41,6 +41,7 @@ const Button = styled.button`
 
 const Search = () => {
   const { q } = useParams();
+  const [pageNumber, setPageNumber] = useState(1);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -52,7 +53,7 @@ const Search = () => {
         url: "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/WebSearchAPI",
         params: {
           q: q,
-          pageNumber: "1",
+          pageNumber: pageNumber,
           pageSize: "10",
           autoCorrect: "true",
         },
@@ -69,7 +70,12 @@ const Search = () => {
       .catch(function (error) {
         console.error(error);
       });
-  }, [q]);
+  }, [q, pageNumber]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pageNumber]);
+
   return (
     <div>
       <div style={{ marginTop: "15px", marginBottom: "30px" }}>
@@ -124,7 +130,13 @@ const Search = () => {
         })}
       </Results>
       <div style={{ maxWidth: "800px", margin: "20px auto" }}>
-        <Button>More Results</Button>
+        <Button
+          onClick={() => {
+            setPageNumber((number) => number + 1);
+          }}
+        >
+          More Results
+        </Button>
       </div>
     </div>
   );
