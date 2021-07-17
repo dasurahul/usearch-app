@@ -1,5 +1,6 @@
 :root {
   --primary-color: hsl(233, 82%, 41%);
+  --light-primary-color: hsl(233, 82%, 56%);
 }
 
 * {
