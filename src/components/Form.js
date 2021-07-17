@@ -98,6 +98,9 @@ const Form = (props) => {
       });
     return () => cancel();
   }, [input]);
+  useEffect(() => {
+    setInput(props.input);
+  }, [props.input]);
   const inputHandler = (event) => {
     setInput(event.target.value);
   };
