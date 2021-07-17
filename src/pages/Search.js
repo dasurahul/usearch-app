@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Typography from "@material-ui/core/Typography";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 import axios from "axios";
 
@@ -43,7 +43,9 @@ const Search = () => {
   const { q } = useParams();
   const [pageNumber, setPageNumber] = useState(1);
   const [items, setItems] = useState([]);
+  const [relatedSearches, setRelatedSearches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const history = useHistory();
   useEffect(() => {
     setLoading(true);
     document.title = q;
@@ -65,6 +67,7 @@ const Search = () => {
       })
       .then(function (response) {
         setItems(response.data.value);
+        setRelatedSearches(response.data.relatedSearch);
         setLoading(false);
       })
       .catch(function (error) {
@@ -74,7 +77,11 @@ const Search = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [pageNumber]);
+  }, [pageNumber, q]);
+
+  useEffect(() => {
+    setPageNumber(1);
+  }, [q]);
 
   return (
     <div>
@@ -83,17 +90,19 @@ const Search = () => {
       </div>
       <Form input={q} />
       <div style={{ maxWidth: "800px", margin: "25px auto" }}>
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link to="/" style={{ color: "#1a0dab" }}>
-            Usearch
-          </Link>
-          <Typography color="textPrimary">{q}</Typography>
-        </Breadcrumbs>
+        {!loading && (
+          <Breadcrumbs aria-label="breadcrumb">
+            <Link to="/" style={{ color: "#1a0dab" }}>
+              Usearch
+            </Link>
+            <Typography color="textPrimary">{q}</Typography>
+          </Breadcrumbs>
+        )}
       </div>
       <Results>
         {items.map((item) => {
           return (
-            <div key={item.id} style={{ marginBottom: "20px" }}>
+            <div key={item.id} style={{ marginBottom: "25px" }}>
               {loading ? (
                 <Skeleton />
               ) : (
@@ -129,14 +138,52 @@ const Search = () => {
           );
         })}
       </Results>
-      <div style={{ maxWidth: "800px", margin: "20px auto" }}>
-        <Button
-          onClick={() => {
-            setPageNumber((number) => number + 1);
-          }}
-        >
-          More Results
-        </Button>
+      <div style={{ maxWidth: "800px", margin: "25px auto" }}>
+        {loading ? (
+          <Skeleton />
+        ) : (
+          relatedSearches.length > 0 && (
+            <h3 style={{ marginBottom: "20px" }}>Related Searches</h3>
+          )
+        )}
+        {loading ? (
+          <Skeleton />
+        ) : (
+          <div>
+            {relatedSearches.map((search) => {
+              const string = search.replace(/(<([^>]+)>)/gi, "");
+              return (
+                <p
+                  style={{
+                    marginBottom: "10px",
+                    padding: "10px 0",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    history.push(`/search/${string}`);
+                  }}
+                >
+                  <i
+                    className="fa fa-search"
+                    style={{ marginRight: "15px", color: "#aaa" }}
+                  ></i>
+                  {string}
+                </p>
+              );
+            })}
+          </div>
+        )}
+      </div>
+      <div style={{ maxWidth: "800px", margin: "25px auto" }}>
+        {!loading && (
+          <Button
+            onClick={() => {
+              setPageNumber((number) => number + 1);
+            }}
+          >
+            More Results
+          </Button>
+        )}
       </div>
     </div>
   );
