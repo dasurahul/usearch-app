@@ -45,6 +45,7 @@ const Search = () => {
   const [items, setItems] = useState([]);
   const [relatedSearches, setRelatedSearches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const history = useHistory();
   useEffect(() => {
     setLoading(true);
@@ -71,7 +72,7 @@ const Search = () => {
         setLoading(false);
       })
       .catch(function (error) {
-        console.error(error);
+        setError(true);
       });
   }, [q, pageNumber]);
 
@@ -89,102 +90,119 @@ const Search = () => {
         <Header />
       </div>
       <Form input={q} />
-      <div style={{ maxWidth: "800px", margin: "25px auto" }}>
-        {!loading && (
-          <Breadcrumbs aria-label="breadcrumb">
-            <Link to="/" style={{ color: "#1a0dab" }}>
-              Usearch
-            </Link>
-            <Typography color="textPrimary">{q}</Typography>
-          </Breadcrumbs>
-        )}
-      </div>
-      <Results>
-        {items.map((item) => {
-          return (
-            <div key={item.id} style={{ marginBottom: "25px" }}>
-              {loading ? (
-                <Skeleton />
-              ) : (
-                <StyledLink
-                  href={item.url}
-                  target="_blank"
-                  style={{
-                    display: "block",
-                    marginBottom: "10px",
-                    fontSize: "20px",
-                  }}
-                >
-                  {item.title}
-                </StyledLink>
-              )}
-              {loading ? (
-                <Skeleton />
-              ) : (
-                <div style={{ color: "#186653", marginBottom: "10px" }}>
-                  {item.url}
-                </div>
-              )}
-              {loading ? (
-                <Skeleton />
-              ) : (
-                <p style={{ color: "#444", marginBottom: "10px" }}>
-                  {item.description.length > 150
-                    ? item.description.substring(0, 150).concat("...")
-                    : item.description}
-                </p>
-              )}
-            </div>
-          );
-        })}
-      </Results>
-      <div style={{ maxWidth: "800px", margin: "25px auto" }}>
-        {loading ? (
-          <Skeleton />
-        ) : (
-          relatedSearches.length > 0 && (
-            <h3 style={{ marginBottom: "20px" }}>Related Searches</h3>
-          )
-        )}
-        {loading ? (
-          <Skeleton />
-        ) : (
-          <div>
-            {relatedSearches.map((search) => {
-              const string = search.replace(/(<([^>]+)>)/gi, "");
+      {error ? (
+        <div
+          style={{ maxWidth: "800px", margin: "50px auto", padding: "0 25px" }}
+        >
+          <div
+            style={{ marginBottom: "15px", fontSize: "18px", color: "#555" }}
+          >
+            Something went wrong
+          </div>
+          <p style={{ fontSize: "14px", color: "#666" }}>
+            Please try after some time
+          </p>
+        </div>
+      ) : (
+        <div>
+          <div style={{ maxWidth: "800px", margin: "25px auto" }}>
+            {!loading && (
+              <Breadcrumbs aria-label="breadcrumb">
+                <Link to="/" style={{ color: "#1a0dab" }}>
+                  Usearch
+                </Link>
+                <Typography color="textPrimary">{q}</Typography>
+              </Breadcrumbs>
+            )}
+          </div>
+          <Results>
+            {items.map((item) => {
               return (
-                <p
-                  style={{
-                    marginBottom: "10px",
-                    padding: "10px 0",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    history.push(`/search/${string}`);
-                  }}
-                >
-                  <i
-                    className="fa fa-search"
-                    style={{ marginRight: "15px", color: "#aaa" }}
-                  ></i>
-                  {string}
-                </p>
+                <div key={item.id} style={{ marginBottom: "25px" }}>
+                  {loading ? (
+                    <Skeleton />
+                  ) : (
+                    <StyledLink
+                      href={item.url}
+                      target="_blank"
+                      style={{
+                        display: "block",
+                        marginBottom: "10px",
+                        fontSize: "20px",
+                      }}
+                    >
+                      {item.title}
+                    </StyledLink>
+                  )}
+                  {loading ? (
+                    <Skeleton />
+                  ) : (
+                    <div style={{ color: "#186653", marginBottom: "10px" }}>
+                      {item.url}
+                    </div>
+                  )}
+                  {loading ? (
+                    <Skeleton />
+                  ) : (
+                    <p style={{ color: "#444", marginBottom: "10px" }}>
+                      {item.description.length > 150
+                        ? item.description.substring(0, 150).concat("...")
+                        : item.description}
+                    </p>
+                  )}
+                </div>
               );
             })}
+          </Results>
+          <div style={{ maxWidth: "800px", margin: "25px auto" }}>
+            {loading ? (
+              <Skeleton />
+            ) : (
+              relatedSearches.length > 0 && (
+                <h3 style={{ marginBottom: "20px" }}>Related Searches</h3>
+              )
+            )}
+            {loading ? (
+              <Skeleton />
+            ) : (
+              <div>
+                {relatedSearches.map((search) => {
+                  const string = search.replace(/(<([^>]+)>)/gi, "");
+                  return (
+                    <p
+                      style={{
+                        marginBottom: "10px",
+                        padding: "10px 0",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        history.push(`/search/${string}`);
+                      }}
+                    >
+                      <i
+                        className="fa fa-search"
+                        style={{ marginRight: "15px", color: "#aaa" }}
+                      ></i>
+                      {string}
+                    </p>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-      <div style={{ maxWidth: "800px", margin: "25px auto" }}>
-        {!loading && (
-          <Button
-            onClick={() => {
-              setPageNumber((number) => number + 1);
-            }}
-          >
-            More Results
-          </Button>
-        )}
-      </div>
+          <div style={{ maxWidth: "800px", margin: "25px auto" }}>
+            {!loading && (
+              <Button
+                onClick={() => {
+                  setPageNumber((number) => number + 1);
+                }}
+              >
+                More Results
+              </Button>
+            )}
+          </div>
+        </div>
+      )}{" "}
     </div>
   );
 };
