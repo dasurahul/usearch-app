@@ -103,6 +103,12 @@ const Search = () => {
             Please try after some time
           </p>
         </div>
+      ) : items.length === 0 ? (
+        <div
+          style={{ maxWidth: "800px", margin: "50px auto", padding: "0 25px" }}
+        >
+          <div style={{ fontSize: "18px", color: "#555" }}>No items found</div>
+        </div>
       ) : (
         <div>
           <div style={{ maxWidth: "800px", margin: "25px auto" }}>
