@@ -103,7 +103,7 @@ const Search = () => {
             Please try after some time
           </p>
         </div>
-      ) : items.length === 0 ? (
+      ) : !loading && !error && items.length === 0 ? (
         <div
           style={{ maxWidth: "800px", margin: "50px auto", padding: "0 25px" }}
         >
@@ -197,17 +197,15 @@ const Search = () => {
             )}
           </div>
           <div style={{ maxWidth: "800px", margin: "25px auto" }}>
-            {!loading &&
-              items.length >
-                9(
-                  <Button
-                    onClick={() => {
-                      setPageNumber((number) => number + 1);
-                    }}
-                  >
-                    More Results
-                  </Button>
-                )}
+            {!loading && items.length > 9 && (
+              <Button
+                onClick={() => {
+                  setPageNumber((number) => number + 1);
+                }}
+              >
+                More Results
+              </Button>
+            )}
           </div>
         </div>
       )}{" "}
