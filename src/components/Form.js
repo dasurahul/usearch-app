@@ -128,7 +128,6 @@ const Form = (props) => {
             aria-hidden="true"
             style={{
               paddingRight: "20px",
-              color: input.trim().length > 0 ? "var(--primary-color)" : "#aaa",
             }}
           ></i>
         </FormControl>
