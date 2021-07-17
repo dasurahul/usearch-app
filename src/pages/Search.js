@@ -191,15 +191,17 @@ const Search = () => {
             )}
           </div>
           <div style={{ maxWidth: "800px", margin: "25px auto" }}>
-            {!loading && (
-              <Button
-                onClick={() => {
-                  setPageNumber((number) => number + 1);
-                }}
-              >
-                More Results
-              </Button>
-            )}
+            {!loading &&
+              items.length >
+                9(
+                  <Button
+                    onClick={() => {
+                      setPageNumber((number) => number + 1);
+                    }}
+                  >
+                    More Results
+                  </Button>
+                )}
           </div>
         </div>
       )}{" "}
